@@ -2,9 +2,9 @@
 
 Multi-agent deliberation framework.
 
-## Overview
-
 ![graph](imgs/graph.jpg)
+
+## Overview
 
 ### Nodes
 
