@@ -5,3 +5,4 @@ class Action(Enum):
     MARKER = "MARKER"
     ACCEPT = "ACCEPT"
     DENY = "DENY"
+    CALL = "CALL"

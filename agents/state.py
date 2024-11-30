@@ -19,7 +19,18 @@ class Message:
             action = Action[message[:idx]]
             message = message[idx+1:]
         
-        return Message(sender, message, action, raw)
+        if action == Action.CALL:
+            return CallMessage(sender, message, raw)
+        else:
+            return Message(sender, message, action, raw)
+
+class CallMessage(Message):
+    def __init__(self, sender: str, message: str, raw: str):
+        super().__init__(sender, message, Action.CALL, raw)
+        self.target = self.parse_target()
+
+    def parse_target(self):
+        return self.message.splitlines()[0].split(":")[1].strip()
 
 class State:
     """
@@ -38,6 +49,20 @@ class State:
         Propagated message is the message that is propagated from the caller.
         """
         self.propagated_message: Message = None
+        """
+        Next speaker is the next speaker to speak.
+        """
+        self.next_speaker: str = None
+        """
+        Exited is a flag to indicate if the discussion is exited.
+        """
+        self.exited: bool = False
+
+    def set_next_speaker(self, speaker: str):
+        """
+        Set the next speaker.
+        """
+        self.next_speaker = speaker
     
     def set_propagated_message(self, message: Message):
         """
@@ -57,7 +82,6 @@ class State:
         """
         self.history.append(self.propagated_message)
         self.reset_propagated_message()
-
         return self.propagated_message
     
     def deny_propagated_message(self) -> Message:

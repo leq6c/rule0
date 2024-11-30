@@ -1,7 +1,5 @@
 from ..prompts.loader import load_prompt
 
-from datetime import datetime
-from langchain.adapters.openai import convert_openai_messages
 from langchain_openai import ChatOpenAI
 
 from .state import State, Message
