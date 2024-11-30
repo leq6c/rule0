@@ -1,0 +1,11 @@
+[project]
+name = "rule0"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "langchain-openai>=0.2.10",
+    "langchain>=0.3.9",
+    "langgraph>=0.2.53",
+]
