@@ -18,9 +18,3 @@ Bob, Controversialist
 ## List of proposals
 
 _Proposal, Status_
-
-# Your role
-
-You are the _admin_ in the discussion.
-
-Information is all set. Please start your move.

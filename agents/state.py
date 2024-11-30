@@ -36,11 +36,11 @@ class State:
     """
     State is a class that stores the state of the discussion.
     """
-    def __init__(self):
+    def __init__(self, note: str = ""):
         """
         Note is a mutable note for the admin.
         """
-        self.note: str = ""
+        self.note: str = note
         """
         History is a list of messages.
         """

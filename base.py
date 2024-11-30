@@ -1,6 +1,7 @@
 from .prompts.loader import load_prompt
 from .agents import AdminAgent, JudgeAgent, ParticipantAgent
 from .agents.state import State
+from .prompts.loader import load_prompt
 
 from langgraph.graph.graph import Graph
 
@@ -21,7 +22,7 @@ class BaseAgent:
 
         participants = []
         for i in range(1):
-            participants.append(ParticipantAgent(f"participant_{i}", "law"))
+            participants.append(ParticipantAgent(f"name_{i}", "law"))
         
         workflow = Graph()
 
@@ -42,8 +43,14 @@ class BaseAgent:
         workflow.set_entry_point("admin")
         workflow.set_finish_point("end")
         
-        # run
+        # Compile the workflow
         chain = workflow.compile()
-        state = chain.invoke(State())
+
+        # Load initial note
+        initial_note = load_prompt("state/default.md")
+        state = State(note=initial_note)
+
+        # Run the workflow
+        state = chain.invoke(state)
 
         return state
