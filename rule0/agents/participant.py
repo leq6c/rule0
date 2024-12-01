@@ -1,7 +1,6 @@
 from ..prompts.loader import load_prompt
 
-from langchain_openai import ChatOpenAI
-
+from .llm import LLM
 from .state import State, Message
 from .prompt import Prompt, Prompts
 
@@ -20,11 +19,11 @@ class ParticipantAgent:
     
     def run(self, state: State) -> State:
         # judge the propagated message
-        llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+        llm = LLM()
         messages = self.get_prompt(state).build(self.name, {"LAW": self.law, "NAME": self.name})
         response = llm.invoke(messages)
         # process the action
-        message = Message.parse(response.content, self.name)
+        message = Message.parse(response, self.name)
 
         # update the state
         state.set_propagated_message(message)

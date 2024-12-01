@@ -1,7 +1,6 @@
 from ..prompts.loader import load_prompt
 
-from langchain_openai import ChatOpenAI
-
+from .llm import LLM
 from .state import State, Message
 from .prompt import Prompt, Prompts
 
@@ -19,10 +18,10 @@ class AdminAgent:
     
     def run(self, state: State) -> State:
         # invoke the llm
-        llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+        llm = LLM()
         messages = self.get_prompt(state).build(self.name)
         response = llm.invoke(messages)
         # update the state
-        state.set_propagated_message(Message.parse(response.content, self.name))
+        state.set_propagated_message(Message.parse(response, self.name))
 
         return state

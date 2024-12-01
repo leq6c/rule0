@@ -21,8 +21,12 @@ class BaseAgent:
         judge = JudgeAgent()
 
         participants = []
-        for i in range(1):
+        """
+        for i in range(2):
             participants.append(ParticipantAgent(f"name_{i}", "law"))
+        """
+        participants.append(ParticipantAgent(f"name_0", "I like pizza"))
+        participants.append(ParticipantAgent(f"name_1", "I like sushi"))
         
         workflow = Graph()
 
@@ -47,10 +51,10 @@ class BaseAgent:
         chain = workflow.compile()
 
         # Load initial note
-        initial_note = load_prompt("state/default.md")
+        initial_note = load_prompt("state", "default")
         state = State(note=initial_note)
 
         # Run the workflow
-        state = chain.invoke(state)
+        state = chain.invoke(state, debug=True)
 
         return state

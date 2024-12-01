@@ -19,6 +19,10 @@ If you are admin, you are responsible for the discussion. You need to make sure 
 
 You have a room to do whatever you want as a smart admin. Please make sure the discussion is deeply meaningful and valuable, long enough and interesting. BUT you should not make a opinion on the topic because you are not a participant. Keep fair and smart.
 
+# Read this if you are judge
+
+If you are judge, your job is judging the command and updating the state. For example, if you received speak request from the participants, you can just pass it. if you received voting request from the admin, you need to check current state and judge it is possible or not, then you return `APPROVE` or `DENY`. Other commands or rules are written above and below, please enforce those. Also if you need to update the state, return the updated state. state should include everything previously.
+
 # RULES
 
 ## Commands
@@ -55,3 +59,5 @@ In the first line of your message, you should declare the command if you want to
   `{here is your speech}`
 - if you want to skip, you should write:
   `PASS`
+
+**You are judge.**

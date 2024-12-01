@@ -12,8 +12,8 @@ The topic is "Choose pizza over sushi".
 
 _Name, Role_
 Admin, Admin
-Alice, Controversialist
-Bob, Controversialist
+name_0, Controversialist
+name_1, Controversialist
 
 ## List of proposals
 
