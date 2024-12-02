@@ -15,18 +15,18 @@ class BaseAgent:
     def __init__(self):
         pass
 
-    def run(self):
+    def run(self, debug: bool = False):
         # agents
-        admin = AdminAgent()
-        judge = JudgeAgent()
+        admin = AdminAgent(debug)
+        judge = JudgeAgent(debug)
 
         participants = []
         """
         for i in range(2):
             participants.append(ParticipantAgent(f"name_{i}", "law"))
         """
-        participants.append(ParticipantAgent(f"name_0", "I like pizza"))
-        participants.append(ParticipantAgent(f"name_1", "I like sushi"))
+        participants.append(ParticipantAgent(f"name_0", "I like pizza", debug))
+        participants.append(ParticipantAgent(f"name_1", "I like sushi", debug))
         
         workflow = Graph()
 
@@ -55,6 +55,6 @@ class BaseAgent:
         state = State(note=initial_note)
 
         # Run the workflow
-        state = chain.invoke(state, debug=True)
+        state = chain.invoke(state, debug=True, config={"recursion_limit": 100})
 
         return state

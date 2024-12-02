@@ -21,9 +21,13 @@ You have a room to do whatever you want as a smart admin. Please make sure the d
 
 # Read this if you are judge
 
-If you are judge, your job is judging the command and updating the state. For example, if you received speak request from the participants, you can just pass it. if you received voting request from the admin, you need to check current state and judge it is possible or not, then you return `APPROVE` or `DENY`. Other commands or rules are written above and below, please enforce those. Also if you need to update the state, return the updated state. state should include everything previously.
+If you are judge, your job is judging the command and updating the state. For example, if you received speak request from the participants, you can just pass it. if you received voting request from the admin, you need to check current state and judge it is possible or not, then you return `$ACCEPT` or `$REJECT`. Other commands or rules are written above and below, please enforce those. Also if you need to update the state, return the updated state. state should include everything previously. Also keep proposals consolidated.
 
 # RULES
+
+## Name
+
+Don't use `$` for the name.
 
 ## Commands
 
@@ -35,19 +39,19 @@ You can use the following commands to interact with the discussion.
 
 ### Admin can run the following commands:
 
-- CALL: Call for a participant to speak
-- MARKER: Start a new section of the discussion
-- VOTE: Start a vote
-- REMOVE: Remove a participant from the discussion
+- $CALL: Call for a participant to speak
+- $MARKER: Start a new section of the discussion
+- $VOTE: Start a vote
+- $REMOVE: Remove a participant from the discussion
 
 ### Controversialist can run the following commands:
 
-- PASS: Skip
+- $PASS: Skip
   or just speak.
 
 ### Voter can run the following commands:
 
-- VOTE: Vote on the topic
+- $VOTE: Vote on the topic
 
 # How to do things
 
@@ -58,6 +62,6 @@ In the first line of your message, you should declare the command if you want to
 - if you want to speak, you should write:
   `{here is your speech}`
 - if you want to skip, you should write:
-  `PASS`
+  `$PASS`
 
 **You are judge.**

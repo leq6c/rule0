@@ -1,1 +1,1 @@
-Information is all set. Please make your move.
+Choose your next move considering the history of the discussion.
