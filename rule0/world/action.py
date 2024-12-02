@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class Action(Enum):
     SPEAK = "SPEAK"
     MARKER = "MARKER"
@@ -23,7 +24,7 @@ class Action(Enum):
             action = action[1:]
         if "-" in action:
             action = action.replace("-", "_")
-        
+
         if Action.has_action(action):
             return Action[action]
         else:

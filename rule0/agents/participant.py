@@ -1,8 +1,10 @@
 from ..prompts.loader import load_prompt
 
-from .llm import LLM
-from .state import State, Message
-from .prompt import Prompt, Prompts
+from ..world.llm import LLM
+from ..world.state import State
+from ..world.message import Message
+from ..world.prompt import Prompt, Prompts
+
 
 class ParticipantAgent:
     def __init__(self, name: str, law: str, debug: bool = False):
@@ -13,15 +15,19 @@ class ParticipantAgent:
         self.debug = debug
 
     def get_prompt(self, state: State) -> Prompts:
-        return Prompts([
-            Prompt("system", self.system_prompt).append(self.note),
-            Prompt("user", state.stringify_history()),
-        ])
-    
+        return Prompts(
+            [
+                Prompt("system", self.system_prompt).append(self.note),
+                Prompt("user", state.stringify_history()),
+            ]
+        )
+
     def run(self, state: State) -> State:
         # judge the propagated message
         llm = LLM(model="gpt-4o", temperature=0.7, debug=self.debug)
-        messages = self.get_prompt(state).build(self.name, {"LAW": self.law, "NAME": self.name})
+        messages = self.get_prompt(state).build(
+            self.name, {"LAW": self.law, "NAME": self.name}
+        )
         response = llm.invoke(messages)
         # process the action
         message = Message.parse(response, self.name)
