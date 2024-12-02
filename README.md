@@ -34,10 +34,14 @@ Multi-agent deliberation framework.
 
 Global state.
 
+### Clock
+
+Global clock.
+
 ### Estoppel
 
 Enforcing consistency in agent behavior.
 
-### Clock
+### Self rewritable rules
 
-Global clock.
+Rules that can be rewritten by the agents themselves based on the discussion.

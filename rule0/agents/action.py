@@ -6,9 +6,9 @@ class Action(Enum):
     ACCEPT = "ACCEPT"
     DENY = "DENY"
     CALL = "CALL"
-    UPDATE_STATE = "UPDATE_STATE"
     PASS = "PASS"
     VOTE = "VOTE"
+    UPDATE_STATE = "UPDATE_STATE"
 
     @staticmethod
     def has_action(action: str) -> bool:

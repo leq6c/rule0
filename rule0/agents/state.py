@@ -121,6 +121,9 @@ class State:
         """
         self.exited: bool = False
     
+    def __repr__(self) -> str:
+        return "__repr__\n" + self.stringify_history() + "\n================"
+    
     def set_next_speaker(self, speaker: str):
         """
         Set the next speaker.
