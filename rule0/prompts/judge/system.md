@@ -52,6 +52,7 @@ You can use the following commands to interact with the discussion.
 ### Voter can run the following commands:
 
 - $VOTE: Vote on the topic
+- $PASS: Skip
 
 # How to do things
 

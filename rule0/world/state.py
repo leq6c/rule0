@@ -61,7 +61,19 @@ class State:
         """
         Accept the action.
         """
+        action.rejected = False
         self.history.append(action)
+
+    def deny_action(self, action: ActionMessage):
+        """
+        Deny the action.
+        """
+        action.rejected = True
+        self.history.append(action)
+        # remove all actions with the same message_id
+        while self.queue and self.queue[-1].message_id == action.message_id:
+            print("removing", self.queue[-1])
+            self.queue.pop()
 
     def stringify_history(self) -> str:
         """
@@ -76,7 +88,7 @@ class State:
             elif action.action == Action.CALL:
                 ret += f"----- {action.sender} called {action.args}\n"
             elif action.action == Action.UPDATE_STATE:
-                ret += f"{action.sender} updated the state\n"
+                ret += f"----- {action.sender} updated the state\n"
             elif action.action == Action.PASS:
                 ret += f"----- {action.sender} passed\n"
             elif action.action == Action.ACCEPT:
@@ -89,6 +101,8 @@ class State:
                 ret += f"----- admin called for a vote: {action.args}\n"
             elif action.action == Action.VOTE:
                 ret += f"** {action.sender} voted for {action.args}\n"
+            elif action.action == Action.END:
+                ret += "----- discussion ended\n"
             else:
                 raise ValueError(f"Invalid action: {action.action}")
         return ret

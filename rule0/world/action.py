@@ -12,6 +12,7 @@ class Action(Enum):
     VOTE = "VOTE"
     CALL_FOR_VOTE = "CALL_FOR_VOTE"
     UPDATE_STATE = "UPDATE_STATE"
+    END = "END"
 
     @staticmethod
     def has_action(action: str) -> bool:
@@ -26,6 +27,8 @@ class Action(Enum):
             action = action[1:]
         if "-" in action:
             action = action.replace("-", "_")
+        if "`" in action:
+            action = action.replace("`", "")
 
         if Action.has_action(action):
             return Action[action]

@@ -4,7 +4,7 @@ from langchain_openai import ChatOpenAI
 class LLM:
     def __init__(
         self,
-        model: str = "gpt-4o",
+        model: str = "gpt-4o-mini",
         temperature: float = 0,
         debug: bool = False,
         token_limit: int = 100_000,

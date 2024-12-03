@@ -6,7 +6,7 @@ from langgraph.graph.graph import Graph
 
 
 def router(state: State) -> str:
-    return state.next_speaker
+    return "end" if state.exited else state.next_speaker
 
 
 def admin_router(state: State) -> str:

@@ -7,18 +7,29 @@ class ActionMessage:
         self.sender = sender
         self.action = action
         self.args = args.strip()
+        self.rejected = False
+        self.message_id = None
 
     def __str__(self):
-        return f"${self.action.value}:{self.args}"
+        if self.rejected:
+            return f"----- *rejected* ${self.action.value}:{self.args}"
+        else:
+            return f"${self.action.value}:{self.args}"
 
     def __repr__(self):
-        return f"${self.action.value}:{self.args}"
+        if self.rejected:
+            return f"----- *rejected* ${self.action.value}:{self.args}"
+        else:
+            return f"${self.action.value}:{self.args}"
 
 
 class Message:
     def __init__(self, sender: str, actions: list[ActionMessage]):
         self.sender = sender
         self.actions = actions
+        self.id = id(self)
+        for action in self.actions:
+            action.message_id = self.id
 
     def first_action(self) -> ActionMessage:
         return self.actions[0] if len(self.actions) > 0 else None
@@ -43,9 +54,12 @@ class Message:
         state = ""
         while True:
             data = buf.readline()
-            if marker in data:
+            if data == "":
                 break  # end of the state
             state += data
+
+        if state.strip().endswith(marker):
+            state = state.strip()[: -len(marker)]
 
         return ActionMessage(sender, Action.UPDATE_STATE, state.strip())
 

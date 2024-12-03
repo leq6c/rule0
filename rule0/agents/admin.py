@@ -17,13 +17,15 @@ class AdminAgent:
         return Prompts(
             [
                 Prompt("system", self.system_prompt).append(state.note),
-                Prompt("user", state.stringify_history()).append(self.move_prompt),
+                Prompt(
+                    "user", "# DISCUSSION HISTORY\n" + state.stringify_history() + "\n"
+                ).append(self.move_prompt),
             ]
         )
 
     def run(self, state: State) -> State:
         # invoke the llm
-        llm = LLM(model="gpt-4o", temperature=0, debug=self.debug)
+        llm = LLM(debug=self.debug)
         messages = self.get_prompt(state).build(self.name)
         response = llm.invoke(messages)
         # update the state

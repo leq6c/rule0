@@ -21,11 +21,8 @@ class JudgeAgent:
                 Prompt("system", self.system_prompt),
                 Prompt(
                     "user",
-                    state.stringify_history()
-                    + "\n"
-                    + state.note
-                    + "\n"
-                    + self.move_prompt,
+                    "# DISCUSSION HISTORY\n" + state.stringify_history() + "\n\n"
+                    "# STATE\n" + state.note + "\n\n" + self.move_prompt,
                 ),
             ]
         )
@@ -35,8 +32,9 @@ class JudgeAgent:
         if action.action == Action.CALL:
             state.set_next_speaker(action.args)
 
-    def deny(self, state: State):
-        state.set_next_speaker("admin")
+    def deny(self, state: State, action: ActionMessage):
+        state.deny_action(action)
+        state.set_next_speaker(action.sender)
 
     def run(self, state: State) -> State:
         if not state.has_action():
@@ -52,7 +50,7 @@ class JudgeAgent:
             self.grant(state, action)
         else:
             # judge the action
-            llm = LLM(model="gpt-4o", temperature=0, debug=self.debug)
+            llm = LLM(debug=self.debug)
             messages = self.get_prompt(state).build(
                 action.sender,
                 {"MESSAGE": str(action)},
@@ -66,11 +64,13 @@ class JudgeAgent:
             ):
                 self.grant(state, action)
             else:
-                self.deny(state)
+                self.deny(state, action)
             # update the state if the judge requests
             for action in judge_message.actions:
                 if action.action == Action.UPDATE_STATE:
                     state.note = action.args
+                if action.action == Action.END:
+                    state.exited = True
                 state.accept_action(action)
 
         return state

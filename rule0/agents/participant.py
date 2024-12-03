@@ -26,7 +26,7 @@ class ParticipantAgent:
 
     def run(self, state: State) -> State:
         # judge the propagated message
-        llm = LLM(model="gpt-4o-mini", temperature=0.7, debug=self.debug)
+        llm = LLM(debug=self.debug)
         messages = self.get_prompt(state).build(
             self.name, {"LAW": self.law, "NAME": self.name}
         )
