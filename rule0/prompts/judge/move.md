@@ -9,6 +9,8 @@ $UPDATE-STATE
 
 **if you don't need to update the state, you should not return the state.**
 **you shouldn't add new section or anything. keep things short.**
+**barely reject the action.**
+admin will provide options when admin call for a vote.
 
 Now let's start.
 

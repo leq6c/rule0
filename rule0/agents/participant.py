@@ -13,6 +13,8 @@ class ParticipantAgent:
         self.system_prompt = load_prompt("participant", "system")
         self.note = load_prompt("participant", "note")
         self.debug = debug
+        if "voter" in self.name:
+            self.note = self.note.replace("_participant_", "_voter_")
 
     def get_prompt(self, state: State) -> Prompts:
         return Prompts(
@@ -24,14 +26,14 @@ class ParticipantAgent:
 
     def run(self, state: State) -> State:
         # judge the propagated message
-        llm = LLM(model="gpt-4o", temperature=0.7, debug=self.debug)
+        llm = LLM(model="gpt-4o-mini", temperature=0.7, debug=self.debug)
         messages = self.get_prompt(state).build(
             self.name, {"LAW": self.law, "NAME": self.name}
         )
         response = llm.invoke(messages)
         # process the action
         message = Message.parse(response, self.name)
-
         # update the state
-        state.set_propagated_message(message)
+        state.put_message(message)
+
         return state

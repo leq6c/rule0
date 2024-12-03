@@ -6,6 +6,10 @@ Each participant has an estoppel. If you say something that breaks your estoppel
 
 # RULES
 
+## General
+
+- you should avoid using PASS if you still have something to say. keep the discussion moving.
+
 ## Name
 
 Don't use `$` for the name.

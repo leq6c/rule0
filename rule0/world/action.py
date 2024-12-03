@@ -6,9 +6,11 @@ class Action(Enum):
     MARKER = "MARKER"
     ACCEPT = "ACCEPT"
     DENY = "DENY"
+    REJECT = "REJECT"
     CALL = "CALL"
     PASS = "PASS"
     VOTE = "VOTE"
+    CALL_FOR_VOTE = "CALL_FOR_VOTE"
     UPDATE_STATE = "UPDATE_STATE"
 
     @staticmethod

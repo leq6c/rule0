@@ -47,10 +47,10 @@ class Message:
                 break  # end of the state
             state += data
 
-        return ActionMessage(None, Action.UPDATE_STATE, state.strip())
+        return ActionMessage(sender, Action.UPDATE_STATE, state.strip())
 
     @staticmethod
-    def parse(raw: str, sender: str, allow_multi_action: bool = False) -> "Message":
+    def parse(raw: str, sender: str) -> "Message":
         buf = StringIO(raw)
         actions = []
         current_message = ""
@@ -63,7 +63,7 @@ class Message:
             data = data.strip()  # remove the new line at the end
             action = Action.parse_action(data)
             if action is not None:
-                if current_message != "":
+                if current_message.strip() != "":
                     actions.append(ActionMessage(sender, Action.SPEAK, current_message))
                     current_message = ""
                 if action == Action.UPDATE_STATE:
@@ -73,26 +73,7 @@ class Message:
                     actions.append(ActionMessage(sender, action, message))
             else:
                 current_message += data + "\n"
-        if current_message != "":
+        if current_message.strip() != "":
             actions.append(ActionMessage(sender, Action.SPEAK, current_message))
-
-        # one action and one speak message is allowed
-        if not allow_multi_action:
-            new_actions = []
-            has_speak = False
-            has_action = False
-            for action in actions:
-                if action.action == Action.SPEAK and has_speak:
-                    continue
-                if action.action != Action.SPEAK and has_action:
-                    continue
-
-                if action.action == Action.SPEAK:
-                    has_speak = True
-                else:
-                    has_action = True
-
-                new_actions.append(action)
-            actions = new_actions
 
         return Message(sender, actions)

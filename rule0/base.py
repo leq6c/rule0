@@ -27,8 +27,10 @@ class BaseAgent:
         for i in range(2):
             participants.append(ParticipantAgent(f"name_{i}", "law"))
         """
-        participants.append(ParticipantAgent("name_0", "I like pizza", debug))
-        participants.append(ParticipantAgent("name_1", "I like sushi", debug))
+        participants.append(ParticipantAgent("name_1", "I like pizza", debug))
+        participants.append(ParticipantAgent("name_2", "I like sushi", debug))
+        for i in range(3):
+            participants.append(ParticipantAgent(f"voter_{i+1}", "equal", debug))
 
         workflow = Graph()
 
@@ -57,6 +59,6 @@ class BaseAgent:
         state = State(note=initial_note)
 
         # Run the workflow
-        state = chain.invoke(state, debug=True, config={"recursion_limit": 100})
+        state = chain.invoke(state, debug=False, config={"recursion_limit": 100})
 
         return state

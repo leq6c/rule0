@@ -10,11 +10,19 @@ The topic is "Choose pizza over sushi".
 
 ## List of participants
 
-_Name, Role_
+```
+Name, Role
+
 Admin, Admin
-name_0, Controversialist
 name_1, Controversialist
+name_2, Controversialist
+voter_1, Voter
+voter_2, Voter
+voter_3, Voter
+```
 
-## List of proposals
+## Voting status
 
-_Proposal, Status_
+```
+not started yet
+```

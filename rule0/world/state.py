@@ -1,6 +1,6 @@
 import copy
 from .action import Action
-from .message import Message
+from .message import Message, ActionMessage
 
 
 class State:
@@ -14,13 +14,13 @@ class State:
         """
         self.note: str = note
         """
-        History is a list of messages.
+        History is a list of action messages.
         """
-        self.history: list[Message] = []
+        self.history: list[ActionMessage] = []
         """
-        Propagated message is the message that is propagated from the caller.
+        Queue is a list of action messages that are waiting to be processed.
         """
-        self.propagated_message: Message = None
+        self.queue: list[ActionMessage] = []
         """
         Next speaker is the next speaker to speak.
         """
@@ -39,58 +39,58 @@ class State:
         """
         self.next_speaker = speaker
 
-    def set_propagated_message(self, message: Message):
+    def put_message(self, message: Message):
         """
-        Set the propagated message.
+        Put the message to the queue.
         """
-        self.propagated_message = message
+        self.queue.extend(reversed(message.actions))
 
-    def reset_propagated_message(self):
+    def pop_action(self) -> ActionMessage:
         """
-        Reset the propagated message.
+        Pop the action from the queue.
         """
-        self.propagated_message = None
+        return self.queue.pop()
 
-    def accept_propagated_message(self) -> Message:
+    def has_action(self) -> bool:
         """
-        Accept the propagated message.
+        Check if the queue is not empty.
         """
-        message = self.propagated_message
-        self.reset_propagated_message()
-        self.history.append(message)
-        return message
+        return len(self.queue) > 0
 
-    def deny_propagated_message(self) -> Message:
+    def accept_action(self, action: ActionMessage):
         """
-        Deny the propagated message.
+        Accept the action.
         """
-        message = self.propagated_message
-        self.reset_propagated_message()
-        return message
+        self.history.append(action)
 
     def stringify_history(self) -> str:
         """
         Stringify the history.
         """
         ret = ""
-        for message in self.history:
-            for action in message.actions:
-                if action.action == Action.SPEAK:
-                    ret += f"{message.sender} said:\n {action.args}\n"
-                elif action.action == Action.MARKER:
-                    ret += f"----- {action.args} -----\n"
-                elif action.action == Action.CALL:
-                    ret += f"{message.sender} called {action.args}\n"
-                elif action.action == Action.UPDATE_STATE:
-                    ret += f"{message.sender} updated the state\n"
-                elif action.action == Action.PASS:
-                    ret += f"{message.sender} passed\n"
-                elif action.action == Action.ACCEPT:
-                    ret += "judge accepted the action\n"
-                elif action.action == Action.DENY:
-                    ret += "judge denied the action\n"
-                else:
-                    raise ValueError(f"Invalid action: {action.action}")
+        for action in self.history:
+            if action.action == Action.SPEAK:
+                ret += f"{action.sender} said:\n {action.args}\n"
+            elif action.action == Action.MARKER:
+                ret += f"----- {action.args} -----\n"
+            elif action.action == Action.CALL:
+                ret += f"----- {action.sender} called {action.args}\n"
+            elif action.action == Action.UPDATE_STATE:
+                ret += f"{action.sender} updated the state\n"
+            elif action.action == Action.PASS:
+                ret += f"----- {action.sender} passed\n"
+            elif action.action == Action.ACCEPT:
+                ret += "----- judge accepted the action\n"
+            elif action.action == Action.DENY:
+                ret += "----- judge denied the action\n"
+            elif action.action == Action.REJECT:
+                ret += "----- judge rejected the action\n"
+            elif action.action == Action.CALL_FOR_VOTE:
+                ret += f"----- admin called for a vote: {action.args}\n"
+            elif action.action == Action.VOTE:
+                ret += f"** {action.sender} voted for {action.args}\n"
+            else:
+                raise ValueError(f"Invalid action: {action.action}")
         return ret
 
     def copy(self) -> "State":

@@ -27,6 +27,6 @@ class AdminAgent:
         messages = self.get_prompt(state).build(self.name)
         response = llm.invoke(messages)
         # update the state
-        state.set_propagated_message(Message.parse(response, self.name))
+        state.put_message(Message.parse(response, self.name))
 
         return state
