@@ -2,7 +2,6 @@
 
 Multi-agent deliberation framework.
 
-![graph](imgs/graph.jpg)
 
 ## Overview
 
@@ -19,10 +18,6 @@ Manages the whole flow. Calls participants to speak, calls for vote, removing pa
 - **judge**: Rule enforcer.
 
 Validates actions that are taken by admin or participants to prevent abuse of power. All the actions are validated by the judge even if they are just want to speak or skip. 
-
-### Tools
-
-- **search**: wip
 
 ## Concept
 
