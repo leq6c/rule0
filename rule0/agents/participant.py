@@ -12,14 +12,13 @@ class ParticipantAgent:
         self.law = law
         self.system_prompt = load_prompt("participant", "system")
         self.move_prompt = load_prompt("participant", "move")
-        self.note = load_prompt("participant", "note")
         self.debug = debug
         if "voter" in self.name:
-            self.note = self.note.replace("_participant_", "_voter_")
+            self.system_prompt = self.system_prompt.replace("_participant_", "_voter_")
 
     def get_prompt(self, state: State) -> Prompts:
         prompts = [
-            Prompt("system", self.system_prompt).append(state.note).append(self.note),
+            Prompt("system", self.system_prompt),
         ]
 
         current = ""
@@ -53,7 +52,7 @@ class ParticipantAgent:
         # judge the propagated message
         llm = LLM(debug=self.debug)
         messages = self.get_prompt(state).build(
-            self.name, {"LAW": self.law, "NAME": self.name}
+            self.name, {"LAW": self.law, "NAME": self.name, "STATE": state.note},
         )
         response = llm.invoke(messages)
         # process the action

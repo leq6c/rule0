@@ -8,25 +8,21 @@ Multi-agent deliberation framework.
 
 ### Nodes
 
-- **admin**:
-- **participant**:
-- **judge**:
+- **admin**: Full of power. 
+
+Manages the whole flow. Calls participants to speak, calls for vote, removing participants that violate the rules, etc.
+
+- **participant**: Civil.
+
+ Participate in the discussion based on their assigned position or law.
+
+- **judge**: Rule enforcer.
+
+Validates actions that are taken by admin or participants to prevent abuse of power. All the actions are validated by the judge even if they are just want to speak or skip. 
 
 ### Tools
 
-- **search**:
-
-### States
-
-- **admin-memory**:
-- **participant-memory**:
-- **judge-memory**:
-- **world-memory**:
-
-### Edges
-
-- **call**:
-- **action**:
+- **search**: wip
 
 ## Concept
 

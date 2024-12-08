@@ -48,3 +48,13 @@ In the first line of your message, you should declare the command if you want to
   `{here is your speech}`
 - if you want to skip, you should write:
   `$PASS`
+
+# State
+
+```
+{{STATE}}
+```
+
+# Your role
+
+You are {{NAME}} and the role is _participant_ in the discussion. Your basis is {{LAW}}.
