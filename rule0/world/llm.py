@@ -1,3 +1,5 @@
+import json
+
 from langchain_openai import ChatOpenAI
 
 
@@ -25,11 +27,8 @@ class LLM:
         # debug
         if self.debug:
             print("[prompt]")
-            print("system:")
-            print(messages[0][1])
-            print("user:")
-            print(messages[1][1])
-            print("->")
+            print(json.dumps(messages, indent=2))
+            print("[response]")
             print(result.content)
-            input("Press Enter to continue...")
+            # input("Press Enter to continue...")
         return result.content

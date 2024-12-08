@@ -1,6 +1,7 @@
 import copy
+
 from .action import Action
-from .message import Message, ActionMessage
+from .message import ActionMessage, Message
 
 
 class State:
@@ -81,30 +82,7 @@ class State:
         """
         ret = ""
         for action in self.history:
-            if action.action == Action.SPEAK:
-                ret += f"{action.sender} said:\n {action.args}\n"
-            elif action.action == Action.MARKER:
-                ret += f"----- {action.args} -----\n"
-            elif action.action == Action.CALL:
-                ret += f"----- {action.sender} called {action.args}\n"
-            elif action.action == Action.UPDATE_STATE:
-                ret += f"----- {action.sender} updated the state\n"
-            elif action.action == Action.PASS:
-                ret += f"----- {action.sender} passed\n"
-            elif action.action == Action.ACCEPT:
-                ret += "----- judge accepted the action\n"
-            elif action.action == Action.DENY:
-                ret += "----- judge denied the action\n"
-            elif action.action == Action.REJECT:
-                ret += "----- judge rejected the action\n"
-            elif action.action == Action.CALL_FOR_VOTE:
-                ret += f"----- admin called for a vote: {action.args}\n"
-            elif action.action == Action.VOTE:
-                ret += f"** {action.sender} voted for {action.args}\n"
-            elif action.action == Action.END:
-                ret += "----- discussion ended\n"
-            else:
-                raise ValueError(f"Invalid action: {action.action}")
+            ret += action.readable()
         return ret
 
     def copy(self) -> "State":

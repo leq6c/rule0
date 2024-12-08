@@ -1,5 +1,6 @@
 import getpass
 import os
+
 from rule0.base import BaseAgent
 
 if not os.environ.get("OPENAI_API_KEY"):

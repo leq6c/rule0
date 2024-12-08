@@ -1,9 +1,9 @@
 from ..prompts.loader import load_prompt
-
+from ..world.action import Action
 from ..world.llm import LLM
-from ..world.state import State
 from ..world.message import Message
 from ..world.prompt import Prompt, Prompts
+from ..world.state import State
 
 
 class AdminAgent:
@@ -14,14 +14,31 @@ class AdminAgent:
         self.debug = debug
 
     def get_prompt(self, state: State) -> Prompts:
-        return Prompts(
-            [
-                Prompt("system", self.system_prompt).append(state.note),
-                Prompt(
-                    "user", "# DISCUSSION HISTORY\n" + state.stringify_history() + "\n"
-                ).append(self.move_prompt),
-            ]
-        )
+        prompts = [
+            Prompt("system", self.system_prompt).append(state.note),
+        ]
+
+        current = ""
+
+        for action in state.history:
+            if action.sender != self.name:
+                current += action.readable()
+            else:
+                if current:
+                    prompts.append(Prompt("user", current))
+                    current = ""
+
+                if action.action == Action.SPEAK:
+                    prompts.append(Prompt("assistant", action.args))
+                else:
+                    prompts.append(Prompt("assistant", "$" + action.action.value + ":" + action.args))
+
+        if current:
+            prompts.append(Prompt("user", current))
+        
+        prompts.append(Prompt("user", self.move_prompt))
+
+        return Prompts(prompts)
 
     def run(self, state: State) -> State:
         # invoke the llm

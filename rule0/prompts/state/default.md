@@ -20,9 +20,3 @@ voter_1, Voter
 voter_2, Voter
 voter_3, Voter
 ```
-
-## Voting status
-
-```
-not started yet
-```

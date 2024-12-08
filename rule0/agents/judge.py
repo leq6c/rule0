@@ -1,10 +1,9 @@
 from ..prompts.loader import load_prompt
-
-from ..world.state import State
-from ..world.message import Message, ActionMessage
 from ..world.action import Action
-from ..world.prompt import Prompt, Prompts
 from ..world.llm import LLM
+from ..world.message import ActionMessage, Message
+from ..world.prompt import Prompt, Prompts
+from ..world.state import State
 
 
 class JudgeAgent:
@@ -15,23 +14,46 @@ class JudgeAgent:
         self.debug = debug
         self.allow_always = False
 
-    def get_prompt(self, state: State) -> Prompts:
-        return Prompts(
-            [
-                Prompt("system", self.system_prompt),
-                Prompt(
-                    "user",
-                    "# DISCUSSION HISTORY\n" + state.stringify_history() + "\n\n"
-                    "# STATE\n" + state.note + "\n\n" + self.move_prompt,
-                ),
-            ]
-        )
+    def get_prompt(self, state: State, next_action: ActionMessage) -> Prompts:
+        prompts = [
+            Prompt("system", self.system_prompt).append(state.note),
+        ]
+
+        current = ""
+
+        history = state.history + [next_action]
+
+        for action in history:
+            prefix = f"{action.sender} requested:\n"
+            if action.sender != self.name:
+                current += prefix + "$" + action.action.value + ":" + action.args
+            else:
+                if current:
+                    prompts.append(Prompt("user", current))
+                    current = ""
+
+                if action.action == Action.SPEAK:
+                    prompts.append(Prompt("assistant", action.args))
+                else:
+                    prompts.append(Prompt("assistant", "$" + action.action.value + ":" + action.args))
+
+        if current:
+            prompts.append(Prompt("user", current))
+        
+        prompts.append(Prompt("user", self.move_prompt))
+
+        return Prompts(prompts)
 
     def grant(self, state: State, action: ActionMessage):
         state.accept_action(action)
         if action.action == Action.CALL:
             state.set_next_speaker(action.args)
-
+    
+    def grant_rest(self, state: State):
+        while state.has_action():
+            action = state.pop_action()
+            state.accept_action(action)
+    
     def deny(self, state: State, action: ActionMessage):
         state.deny_action(action)
         state.set_next_speaker(action.sender)
@@ -51,18 +73,21 @@ class JudgeAgent:
         else:
             # judge the action
             llm = LLM(debug=self.debug)
-            messages = self.get_prompt(state).build(
+            messages = self.get_prompt(state, action).build(
                 action.sender,
                 {"MESSAGE": str(action)},
             )
             response = llm.invoke(messages)
             # process the action
             judge_message = Message.parse(response, self.name)
-            if (
-                judge_message.first_action() is not None
-                and judge_message.first_action().action == Action.ACCEPT
-            ):
+            first_action = None
+            if judge_message.first_action() is not None:
+                first_action = judge_message.first_action().action
+            if first_action == Action.ACCEPT:
                 self.grant(state, action)
+            elif first_action == Action.END:
+                self.grant(state, action)
+                self.grant_rest(state)
             else:
                 self.deny(state, action)
             # update the state if the judge requests

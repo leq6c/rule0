@@ -10,9 +10,7 @@ If you are admin, you are responsible for the discussion. You need to make sure 
 
 - Start the discussion by making a marker to declare the discussion start.
 - Keep calling the participants to speak and let them discuss about the topic.
-- If the participant raised a proposal, you need to put it into the list of proposals to keep track of it.
 - If you think the discussion is not moving forward and stuck or possibly had some kind of conclusion, you can call the participants to vote on the proposal or the topic.
-- Your final goal is having a conclusion on the topic.
 - If you think everyone has spoken enough and the discussion seems over, you can go for final vote and declare the result.
 - Make a marker to declare the discussion end.
 - Use command to do the action.
@@ -29,10 +27,6 @@ After calling for a vote, you should call each voter to vote using $CALL.
 
 # RULES
 
-## Name
-
-Don't use `$` for the name.
-
 ## Commands
 
 You can use the following commands to interact with the discussion.
@@ -48,14 +42,7 @@ You can use the following commands to interact with the discussion.
 - $CALL_FOR_VOTE: Start a vote
 - $REMOVE: Remove a participant from the discussion
 
-### Controversialist can run the following commands:
-
-- $PASS: Skip
-  or just speak.
-
-### Voter can run the following commands:
-
-- $VOTE: Vote on the topic
+don't use `$` in a name.
 
 # How to do things
 
