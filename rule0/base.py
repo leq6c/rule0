@@ -1,8 +1,8 @@
-from .prompts.loader import load_prompt
-from .agents import AdminAgent, JudgeAgent, ParticipantAgent
-from .world.state import State
-
 from langgraph.graph.graph import Graph
+
+from .agents import AdminAgent, JudgeAgent, ParticipantAgent
+from .prompts.loader import load_prompt
+from .world.state import State
 
 
 def router(state: State) -> str:
@@ -59,6 +59,6 @@ class BaseAgent:
         state = State(note=initial_note)
 
         # Run the workflow
-        state = chain.invoke(state, debug=False, config={"recursion_limit": 100})
+        state = chain.invoke(state, debug=False, config={"recursion_limit": 500})
 
         return state
