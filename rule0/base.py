@@ -2,7 +2,7 @@ from langgraph.graph.graph import Graph
 
 from .agents import AdminAgent, JudgeAgent, ParticipantAgent
 from .prompts.loader import load_prompt
-from .world.state import State
+from .orchestrator.state import State
 
 
 def router(state: State) -> str:

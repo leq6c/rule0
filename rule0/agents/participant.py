@@ -1,9 +1,9 @@
 from ..prompts.loader import load_prompt
-from ..world.action import Action
-from ..world.llm import LLM
-from ..world.message import Message
-from ..world.prompt import Prompt, Prompts
-from ..world.state import State
+from ..orchestrator.action import Action
+from ..orchestrator.llm import LLM
+from ..orchestrator.message import Message
+from ..orchestrator.prompt import Prompt, Prompts
+from ..orchestrator.state import State
 
 
 class ParticipantAgent:
@@ -36,15 +36,21 @@ class ParticipantAgent:
                 if action.action == Action.SPEAK:
                     prompts.append(Prompt("assistant", action.args))
                 else:
-                    prompts.append(Prompt("assistant", "$" + action.action.value + ":" + action.args))
+                    prompts.append(
+                        Prompt(
+                            "assistant", "$" + action.action.value + ":" + action.args
+                        )
+                    )
 
         if current:
             prompts.append(Prompt("user", current))
-        
+
         prompts.append(Prompt("user", self.move_prompt))
 
         if "voter" in self.name:
-            prompts[-1].append("You can only vote with $VOTE to choose one of the options.")
+            prompts[-1].append(
+                "You can only vote with $VOTE to choose one of the options."
+            )
 
         return Prompts(prompts)
 
@@ -52,7 +58,8 @@ class ParticipantAgent:
         # judge the propagated message
         llm = LLM(debug=self.debug)
         messages = self.get_prompt(state).build(
-            self.name, {"LAW": self.law, "NAME": self.name, "STATE": state.note},
+            self.name,
+            {"LAW": self.law, "NAME": self.name, "STATE": state.note},
         )
         response = llm.invoke(messages)
         # process the action

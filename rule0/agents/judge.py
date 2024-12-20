@@ -1,9 +1,9 @@
 from ..prompts.loader import load_prompt
-from ..world.action import Action
-from ..world.llm import LLM
-from ..world.message import ActionMessage, Message
-from ..world.prompt import Prompt, Prompts
-from ..world.state import State
+from ..orchestrator.action import Action
+from ..orchestrator.llm import LLM
+from ..orchestrator.message import ActionMessage, Message
+from ..orchestrator.prompt import Prompt, Prompts
+from ..orchestrator.state import State
 
 
 class JudgeAgent:
@@ -35,11 +35,15 @@ class JudgeAgent:
                 if action.action == Action.SPEAK:
                     prompts.append(Prompt("assistant", action.args))
                 else:
-                    prompts.append(Prompt("assistant", "$" + action.action.value + ":" + action.args))
+                    prompts.append(
+                        Prompt(
+                            "assistant", "$" + action.action.value + ":" + action.args
+                        )
+                    )
 
         if current:
             prompts.append(Prompt("user", current))
-        
+
         prompts.append(Prompt("user", self.move_prompt))
 
         return Prompts(prompts)
@@ -48,12 +52,12 @@ class JudgeAgent:
         state.accept_action(action)
         if action.action == Action.CALL:
             state.set_next_speaker(action.args)
-    
+
     def grant_rest(self, state: State):
         while state.has_action():
             action = state.pop_action()
             state.accept_action(action)
-    
+
     def deny(self, state: State, action: ActionMessage):
         state.deny_action(action)
         state.set_next_speaker(action.sender)

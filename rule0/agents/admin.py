@@ -1,9 +1,9 @@
 from ..prompts.loader import load_prompt
-from ..world.action import Action
-from ..world.llm import LLM
-from ..world.message import Message
-from ..world.prompt import Prompt, Prompts
-from ..world.state import State
+from ..orchestrator.action import Action
+from ..orchestrator.llm import LLM
+from ..orchestrator.message import Message
+from ..orchestrator.prompt import Prompt, Prompts
+from ..orchestrator.state import State
 
 
 class AdminAgent:
@@ -31,11 +31,15 @@ class AdminAgent:
                 if action.action == Action.SPEAK:
                     prompts.append(Prompt("assistant", action.args))
                 else:
-                    prompts.append(Prompt("assistant", "$" + action.action.value + ":" + action.args))
+                    prompts.append(
+                        Prompt(
+                            "assistant", "$" + action.action.value + ":" + action.args
+                        )
+                    )
 
         if current:
             prompts.append(Prompt("user", current))
-        
+
         prompts.append(Prompt("user", self.move_prompt))
 
         return Prompts(prompts)
