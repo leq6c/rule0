@@ -25,5 +25,5 @@ def stream():
 
     return Response(generate(), content_type="text/event-stream")
 
-if __name__ == "__main__":
-    app.run(port=8080, debug=True)
+def spawn_server(port: int):
+    app.run(port=port, debug=True)

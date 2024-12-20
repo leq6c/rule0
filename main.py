@@ -1,21 +1,26 @@
+import cmd.example
+import cmd.server
 import getpass
 import os
 
-from rule0.builder import AgentConfig, Builder
-from rule0.prompts.loader import load_prompt
+import click
 
-if not os.environ.get("OPENAI_API_KEY"):
-    os.environ["OPENAI_API_KEY"] = getpass.getpass("Enter your OpenAI API key: ")
 
-builder = Builder(topic="Pizza or Sushi", agents=[
-    AgentConfig("participantA", "Controversialist", "I like pizza", "normal"),
-    AgentConfig("participantB", "Controversialist", "I like sushi", "normal"),
-    AgentConfig("voterA", "Voter", "equal", "normal"),
-    AgentConfig("voterB", "Voter", "equal", "normal"),
-    AgentConfig("voterC", "Voter", "equal", "normal"),
-], prompts={})
+@click.group()
+def cli():
+    pass
 
-initial_note = load_prompt("state", "default")
+@cli.command()
+def example():
+    cmd.example.run()
 
-for log in builder.run(initial_note):
-    print(log)
+@cli.command()
+@click.option("--port", type=int, default=8080)
+def server(port: int):
+    cmd.server.spawn_server(port)
+
+if __name__ == "__main__":
+    if not os.environ.get("OPENAI_API_KEY"):
+        os.environ["OPENAI_API_KEY"] = getpass.getpass("Enter your OpenAI API key: ")
+
+    cli()

@@ -1,6 +1,6 @@
-# Server
+# Command
 
-## api
+## Server
 
 ### `POST /stream`
 
