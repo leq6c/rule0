@@ -9,4 +9,6 @@ dependencies = [
     "langchain>=0.3.9",
     "langgraph>=0.2.53",
     "ruff>=0.8.1",
+    "flask>=3.1.0",
+    "flask-cors>=5.0.0",
 ]

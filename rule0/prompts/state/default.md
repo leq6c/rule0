@@ -14,9 +14,9 @@ The topic is "Choose pizza over sushi".
 Name, Role
 
 Admin, Admin
-name_1, Controversialist
-name_2, Controversialist
-voter_1, Voter
-voter_2, Voter
-voter_3, Voter
+participantA, Controversialist
+participantB, Controversialist
+voterA, Voter
+voterB, Voter
+voterC, Voter
 ```
