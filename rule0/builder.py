@@ -19,13 +19,22 @@ class AgentConfig:
         return AgentConfig(data["name"], data["role"], data["basis"], data["verbal"])
 
 class Log:
-    def __init__(self, sender: str, action: str, message: str):
+    def __init__(self, sender: str, action: str, message: str, id: str):
         self.sender = sender
         self.action = action
         self.message = message
+        self.id = id
     
     def __repr__(self) -> str:
         return f"{self.sender}: {self.action} {self.message}"
+    
+    def to_dict(self) -> dict:
+        return {
+            "sender": self.sender,
+            "action": self.action,
+            "message": self.message,
+            "id": self.id,
+        }
 
 class Builder:
     def __init__(self, topic: str, agents: list[AgentConfig], prompts: dict[str, str], debug: bool = False):
@@ -77,8 +86,10 @@ class Builder:
     
     def state_to_result(self, state: State) -> list[Log]:
         logs = []
+        i = 0
         for action in state.history:
-            logs.append(Log(action.sender, action.action.value, action.args))
+            logs.append(Log(action.sender, action.action.value, action.args, str(i)))
+            i += 1
         return logs
     
     def run(self) -> Generator[list[Log], None, None]:
@@ -88,7 +99,7 @@ class Builder:
         note = note_prompt.apply(self.topic, self.agents)
         state = State(note=note)
         last_result_str = ""
-        for _ in chain.stream(state, stream_mode="updates", debug=self.debug, config={"recursion_limit": 500}):
+        for _ in chain.stream(state, stream_mode="values", debug=self.debug, config={"recursion_limit": 500}):
             result = self.state_to_result(state)
             result_str = "\n".join([repr(log) for log in result])
             if result_str != last_result_str:
