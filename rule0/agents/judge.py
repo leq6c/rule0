@@ -13,7 +13,7 @@ class JudgeAgent:
         self.system_prompt = load_prompt("judge", "system")
         self.move_prompt = load_prompt("judge", "move")
         self.debug = debug
-        self.allow_always = False
+        self.allow_always = True
 
     def get_prompt(self, state: State, next_action: ActionMessage) -> Prompts:
         prompts = [
@@ -74,6 +74,8 @@ class JudgeAgent:
         action = state.pop_action()
 
         if self.allow_always:
+            if "discussion end" in action.args.lower() and action.sender == "admin" and action.action == Action.MARKER:
+                state.exited = True
             self.grant(state, action)
         else:
             # judge the action
