@@ -1,14 +1,15 @@
-from ..prompts.loader import load_prompt
 from ..orchestrator.action import Action
 from ..orchestrator.llm import LLM
 from ..orchestrator.message import ActionMessage, Message
 from ..orchestrator.prompt import Prompt, Prompts
 from ..orchestrator.state import State
+from ..prompts.loader import load_prompt
 
 
 class JudgeAgent:
     def __init__(self, debug: bool = False):
         self.name = "judge"
+        self.base_system_prompt = load_prompt("all", "system")
         self.system_prompt = load_prompt("judge", "system")
         self.move_prompt = load_prompt("judge", "move")
         self.debug = debug
@@ -16,7 +17,7 @@ class JudgeAgent:
 
     def get_prompt(self, state: State, next_action: ActionMessage) -> Prompts:
         prompts = [
-            Prompt("system", self.system_prompt).append(state.note),
+            Prompt("system", self.base_system_prompt).append(self.system_prompt).append(state.note),
         ]
 
         current = ""

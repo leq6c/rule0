@@ -11,7 +11,5 @@ def run():
         AgentConfig("voterC", "Voter", "equal", "normal"),
     ], prompts={})
 
-    initial_note = load_prompt("state", "default")
-
-    for log in builder.run(initial_note):
+    for log in builder.run():
         print(log)

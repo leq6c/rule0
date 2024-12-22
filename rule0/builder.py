@@ -4,6 +4,7 @@ from langgraph.graph.graph import Graph
 
 from rule0.agents import AdminAgent, JudgeAgent, ParticipantAgent
 from rule0.orchestrator.state import State
+from rule0.prompts.note import NotePrompt
 
 
 class AgentConfig:
@@ -45,7 +46,7 @@ class Builder:
 
         participants = []
         for agent in self.agents:
-            participants.append(ParticipantAgent(agent.name, agent.basis, self.debug))
+            participants.append(ParticipantAgent(agent.name, agent.role, agent.basis, self.debug))
 
         workflow = Graph()
 
@@ -80,9 +81,11 @@ class Builder:
             logs.append(Log(action.sender, action.action.value, action.args))
         return logs
     
-    def run(self, note: str) -> Generator[list[Log], None, None]:
+    def run(self) -> Generator[list[Log], None, None]:
         workflow = self.build_workflow()
         chain = workflow.compile()
+        note_prompt = NotePrompt()
+        note = note_prompt.apply(self.topic, self.agents)
         state = State(note=note)
         last_result_str = ""
         for _ in chain.stream(state, stream_mode="updates", debug=self.debug, config={"recursion_limit": 500}):

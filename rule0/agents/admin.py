@@ -1,21 +1,22 @@
-from ..prompts.loader import load_prompt
 from ..orchestrator.action import Action
 from ..orchestrator.llm import LLM
 from ..orchestrator.message import Message
 from ..orchestrator.prompt import Prompt, Prompts
 from ..orchestrator.state import State
+from ..prompts.loader import load_prompt
 
 
 class AdminAgent:
     def __init__(self, debug: bool = False):
         self.name = "admin"
+        self.base_system_prompt = load_prompt("all", "system")
         self.system_prompt = load_prompt("admin", "system")
         self.move_prompt = load_prompt("admin", "move")
         self.debug = debug
 
     def get_prompt(self, state: State) -> Prompts:
         prompts = [
-            Prompt("system", self.system_prompt).append(state.note),
+            Prompt("system", self.base_system_prompt).append(self.system_prompt).append(state.note),
         ]
 
         current = ""
