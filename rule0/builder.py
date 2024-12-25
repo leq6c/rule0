@@ -42,6 +42,8 @@ class Builder:
         self.agents = agents
         self.prompts = prompts
         self.debug = debug
+        self.total_input_tokens = 0
+        self.total_output_tokens = 0
 
     def router(self, state: State) -> str:
         return "end" if state.exited else state.next_speaker
@@ -50,12 +52,12 @@ class Builder:
         return "end" if state.exited else "judge"
 
     def build_workflow(self) -> Graph:
-        admin_agent = AdminAgent(self.debug)
-        judge_agent = JudgeAgent(self.debug)
+        admin_agent = AdminAgent(self.prompts["base"]["system"], self.prompts["admin"]["system"], self.prompts["admin"]["move"], self.debug)
+        judge_agent = JudgeAgent(self.prompts["base"]["system"], self.prompts["judge"]["system"], self.prompts["judge"]["move"], self.debug)
 
         participants = []
         for agent in self.agents:
-            participants.append(ParticipantAgent(agent.name, agent.role, agent.basis, self.debug))
+            participants.append(ParticipantAgent(agent.name, agent.role, agent.basis, self.prompts["base"]["system"], self.prompts["participant"]["system"], self.prompts["participant"]["move"], self.debug))
 
         workflow = Graph()
 
@@ -99,9 +101,11 @@ class Builder:
         note = note_prompt.apply(self.topic, self.agents)
         state = State(note=note)
         last_result_str = ""
-        for _ in chain.stream(state, stream_mode="values", debug=self.debug, config={"recursion_limit": 500}):
+        for _ in chain.stream(state, stream_mode="values", debug=self.debug, config={"recursion_limit": 5000}):
             result = self.state_to_result(state)
             result_str = "\n".join([repr(log) for log in result])
             if result_str != last_result_str:
                 yield result
                 last_result_str = result_str
+            self.total_input_tokens = state.total_input_tokens
+            self.total_output_tokens = state.total_output_tokens

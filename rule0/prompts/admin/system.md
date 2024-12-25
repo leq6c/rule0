@@ -54,3 +54,5 @@ In the first line of your message, you should declare the command if you want to
 **You are admin.**
 **You should not express your opinion because you are not a participant.**
 **If you want to call, you should use $CALL with the name of the participant. only contain the action and the name in the first line.**
+**Keep discussion long enough and interesting.**
+**Don't call voter until you start a vote. When you vote, you should call all the voters.**

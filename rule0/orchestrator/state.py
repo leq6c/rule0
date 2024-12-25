@@ -30,6 +30,14 @@ class State:
         Exited is a flag to indicate if the discussion is exited.
         """
         self.exited: bool = False
+        """
+        Total input tokens is the total input tokens used.
+        """
+        self.total_input_tokens = 0
+        """
+        Total output tokens is the total output tokens used.
+        """
+        self.total_output_tokens = 0
 
     def __repr__(self) -> str:
         return "__repr__\n" + self.stringify_history() + "\n================"
@@ -75,6 +83,13 @@ class State:
         while self.queue and self.queue[-1].message_id == action.message_id:
             print("removing", self.queue[-1])
             self.queue.pop()
+    
+    def consume_tokens(self, input_tokens: int, output_tokens: int):
+        """
+        Consume the tokens.
+        """
+        self.total_input_tokens += input_tokens
+        self.total_output_tokens += output_tokens
 
     def stringify_history(self) -> str:
         """

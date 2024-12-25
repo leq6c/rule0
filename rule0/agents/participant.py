@@ -3,17 +3,16 @@ from ..orchestrator.llm import LLM
 from ..orchestrator.message import Message
 from ..orchestrator.prompt import Prompt, Prompts
 from ..orchestrator.state import State
-from ..prompts.loader import load_prompt
 
 
 class ParticipantAgent:
-    def __init__(self, name: str, role: str, law: str, debug: bool = False):
+    def __init__(self, name: str, role: str, law: str, base_system_prompt: str, system_prompt: str, move_prompt: str, debug: bool = False):
         self.name = name
         self.role = role
         self.law = law
-        self.base_system_prompt = load_prompt("all", "system")
-        self.system_prompt = load_prompt("participant", "system")
-        self.move_prompt = load_prompt("participant", "move")
+        self.base_system_prompt = base_system_prompt
+        self.system_prompt = system_prompt
+        self.move_prompt = move_prompt
         self.debug = debug
 
     def get_prompt(self, state: State) -> Prompts:
@@ -66,5 +65,5 @@ class ParticipantAgent:
         message = Message.parse(response, self.name)
         # update the state
         state.put_message(message)
-
+        state.consume_tokens(llm.total_input_tokens, llm.total_output_tokens)
         return state

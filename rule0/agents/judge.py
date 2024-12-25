@@ -3,15 +3,14 @@ from ..orchestrator.llm import LLM
 from ..orchestrator.message import ActionMessage, Message
 from ..orchestrator.prompt import Prompt, Prompts
 from ..orchestrator.state import State
-from ..prompts.loader import load_prompt
 
 
 class JudgeAgent:
-    def __init__(self, debug: bool = False):
+    def __init__(self, base_system_prompt: str, system_prompt: str, move_prompt: str, debug: bool = False):
         self.name = "judge"
-        self.base_system_prompt = load_prompt("all", "system")
-        self.system_prompt = load_prompt("judge", "system")
-        self.move_prompt = load_prompt("judge", "move")
+        self.base_system_prompt = base_system_prompt
+        self.system_prompt = system_prompt
+        self.move_prompt = move_prompt
         self.debug = debug
         self.allow_always = True
 
@@ -85,6 +84,7 @@ class JudgeAgent:
                 {"MESSAGE": str(action)},
             )
             response = llm.invoke(messages)
+            state.consume_tokens(llm.total_input_tokens, llm.total_output_tokens)
             # process the action
             judge_message = Message.parse(response, self.name)
             first_action = None

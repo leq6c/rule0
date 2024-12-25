@@ -9,7 +9,23 @@ def run():
         AgentConfig("voterA", "Voter", "equal", "normal"),
         AgentConfig("voterB", "Voter", "equal", "normal"),
         AgentConfig("voterC", "Voter", "equal", "normal"),
-    ], prompts={})
+    ], prompts={
+        "base": {
+            "system": load_prompt("base", "system"),
+        },
+        "admin": {
+            "system": load_prompt("admin", "system"),
+            "move": load_prompt("admin", "move"),
+        },
+        "participant": {
+            "system": load_prompt("participant", "system"),
+            "move": load_prompt("participant", "move"),
+        },
+        "judge": {
+            "system": load_prompt("judge", "system"),
+            "move": load_prompt("judge", "move"),
+        },
+    })
 
     for log in builder.run():
         print(log)

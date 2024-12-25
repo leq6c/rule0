@@ -3,15 +3,14 @@ from ..orchestrator.llm import LLM
 from ..orchestrator.message import Message
 from ..orchestrator.prompt import Prompt, Prompts
 from ..orchestrator.state import State
-from ..prompts.loader import load_prompt
 
 
 class AdminAgent:
-    def __init__(self, debug: bool = False):
+    def __init__(self, base_system_prompt: str, system_prompt: str, move_prompt: str, debug: bool = False):
         self.name = "admin"
-        self.base_system_prompt = load_prompt("all", "system")
-        self.system_prompt = load_prompt("admin", "system")
-        self.move_prompt = load_prompt("admin", "move")
+        self.base_system_prompt = base_system_prompt
+        self.system_prompt = system_prompt
+        self.move_prompt = move_prompt
         self.debug = debug
 
     def get_prompt(self, state: State) -> Prompts:
@@ -50,6 +49,7 @@ class AdminAgent:
         llm = LLM(debug=self.debug)
         messages = self.get_prompt(state).build(self.name)
         response = llm.invoke(messages)
+        state.consume_tokens(llm.total_input_tokens, llm.total_output_tokens)
         # update the state
         state.put_message(Message.parse(response, self.name))
 
