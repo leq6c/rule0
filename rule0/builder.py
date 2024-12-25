@@ -7,16 +7,25 @@ from rule0.orchestrator.state import State
 from rule0.prompts.note import NotePrompt
 
 
+class ConditionalAction:
+    def __init__(self, id: str, percentage: int, action: str):
+        self.id = id
+        self.percentage = percentage
+        self.action = action
+
 class AgentConfig:
-    def __init__(self, name: str, role: str, basis: str, verbal: str):
+    def __init__(self, name: str, role: str, basis: str, verbal: str, conditional_actions: list[ConditionalAction]):
         self.name = name
         self.role = role
         self.basis = basis
         self.verbal = verbal
+        self.conditional_actions = conditional_actions
     
     @staticmethod
     def decode(data: dict) -> "AgentConfig":
-        return AgentConfig(data["name"], data["role"], data["basis"], data["verbal"])
+        if "conditionalActions" not in data:
+            data["conditionalActions"] = []
+        return AgentConfig(data["name"], data["role"], data["basis"], data["verbal"], [ConditionalAction(action["id"], action["percentage"], action["action"]) for action in data["conditionalActions"]])
 
 class Log:
     def __init__(self, sender: str, action: str, message: str, id: str):
@@ -57,7 +66,7 @@ class Builder:
 
         participants = []
         for agent in self.agents:
-            participants.append(ParticipantAgent(agent.name, agent.role, agent.basis, self.prompts["base"]["system"], self.prompts["participant"]["system"], self.prompts["participant"]["move"], self.debug))
+            participants.append(ParticipantAgent(agent.name, agent.role, agent.basis, self.prompts["base"]["system"], self.prompts["participant"]["system"], self.prompts["participant"]["move"], agent.conditional_actions, self.debug))
 
         workflow = Graph()
 
