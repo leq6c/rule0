@@ -10,9 +10,11 @@ from rule0.builder import AgentConfig, Builder
 app = Flask(__name__)
 CORS(app)
 
+
 @app.route("/ping")
 def ping():
     return "pong"
+
 
 @app.route("/stream", methods=["POST"])
 def stream():
@@ -46,7 +48,12 @@ def stream():
                     # send tokens
                     message = "event: tokens\n"
                     message += "data: "
-                    message += json.dumps({"input": builder.total_input_tokens, "output": builder.total_output_tokens})
+                    message += json.dumps(
+                        {
+                            "input": builder.total_input_tokens,
+                            "output": builder.total_output_tokens,
+                        }
+                    )
                     message += "\n\n"
                     queue.append(message)
             finally:
@@ -67,8 +74,9 @@ def stream():
             done.set()
             ping_th.join()
             builder_th.join()
-        
+
     return Response(generate(), mimetype="text/event-stream")
+
 
 def spawn_server(port: int):
     app.run(port=port, debug=True)

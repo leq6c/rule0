@@ -6,10 +6,10 @@ from langchain_openai import ChatOpenAI
 class LLM:
     def __init__(
         self,
-        model: str = "gpt-4o-mini",
+        model: str = "gpt-4o",
         temperature: float = 1,
         debug: bool = False,
-        token_limit: int = 100_000,
+        token_limit: int = 1_000_000,
     ):
         self.llm = ChatOpenAI(model=model, temperature=temperature)
         self.debug = debug
