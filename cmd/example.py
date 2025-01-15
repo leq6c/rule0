@@ -4,11 +4,11 @@ from rule0.prompts.loader import load_prompt
 
 def run():
     builder = Builder(topic="Pizza or Sushi", agents=[
-        AgentConfig("participantA", "Controversialist", "I like pizza", "normal"),
-        AgentConfig("participantB", "Controversialist", "I like sushi", "normal"),
-        AgentConfig("voterA", "Voter", "equal", "normal"),
-        AgentConfig("voterB", "Voter", "equal", "normal"),
-        AgentConfig("voterC", "Voter", "equal", "normal"),
+        AgentConfig("participantA", "Controversialist", "I like pizza", "normal", []),
+        AgentConfig("participantB", "Controversialist", "I like sushi", "normal", []),
+        AgentConfig("voterA", "Voter", "equal", "normal", []),
+        AgentConfig("voterB", "Voter", "equal", "normal", []),
+        AgentConfig("voterC", "Voter", "equal", "normal", []),
     ], prompts={
         "base": {
             "system": load_prompt("base", "system"),
@@ -28,4 +28,4 @@ def run():
     })
 
     for log in builder.run():
-        print(log)
+        print(log[-1])
